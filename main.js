@@ -14,8 +14,8 @@ JSB.newAddon = function(mainPath) {
     // Open External Browser
     function openUrlWithExternalBrowser(url) {
         // endoce URL to utf-8. NSURL cannot handle Chinese url
-        let finalUrl = encodeURI(url);
-        UIApplication.sharedApplication().openURL(NSURL.URLWithString(finalUrl));
+        let encodedUrl = encodeURI(url);
+        UIApplication.sharedApplication().openURL(NSURL.URLWithString(encodedUrl));
     }
     //MARK - Addon Class definition
     var newAddonClass= JSB.defineClass('InstantCategory : JSExtension', {
