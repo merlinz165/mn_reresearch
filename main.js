@@ -18,7 +18,7 @@ JSB.newAddon = function(mainPath) {
         UIApplication.sharedApplication().openURL(NSURL.URLWithString(encodedUrl));
     }
     //MARK - Addon Class definition
-    var newAddonClass= JSB.defineClass('InstantCategory : JSExtension', {
+    var newAddonClass= JSB.defineClass('ReResearchAddon : JSExtension', {
         //Mark: - Instance Method Definitions
         // Window initialize
         sceneWillConnect: function() {
