@@ -4,7 +4,7 @@ JSB.newAddon = function(mainPath) {
     // Baidu: http://www.baidu.com/s?wd={keyword}
     // the baseUrl can also be URL Scheme such as eudic://dict/{keyword}
     // eudic-de://dict/{keyword}
-    var baseUrl = "http://www.google.com/search?q=";
+    var baseUrl = "eudic://dict/";
     //MARK: - Customized functions
     // URL generation
     function generateUrl(keyWords) {
@@ -18,7 +18,7 @@ JSB.newAddon = function(mainPath) {
         UIApplication.sharedApplication().openURL(NSURL.URLWithString(encodedUrl));
     }
     //MARK - Addon Class definition
-    var newAddonClass= JSB.defineClass('ReResearchAddon : JSExtension', {
+    var newAddonClass= JSB.defineClass('SearchInEudicAddon : JSExtension', {
         //Mark: - Instance Method Definitions
         // Window initialize
         sceneWillConnect: function() {
@@ -35,7 +35,7 @@ JSB.newAddon = function(mainPath) {
         //MARK: MN behaviors
         notebookWillOpen: function(notebookid) {
             NSNotificationCenter.defaultCenter().addObserverSelectorName(self, 'onPopupMenuOnSelection:', 'PopupMenuOnSelection');
-            self.reResearchIsOn = NSUserDefaults.standardUserDefaults().objectForKey('marginnote_reresearch');
+            self.searchInEudicIsOn = NSUserDefaults.standardUserDefaults().objectForKey('marginnote_searchineudic');
         },
         notebookWillClose: function(notebookid) {
             NSNotificationCenter.defaultCenter().removeObserverName(self,'PopupMenuOnSelection');
@@ -49,10 +49,10 @@ JSB.newAddon = function(mainPath) {
         queryAddonCommandStatus: function() {
             if(Application.sharedInstance().studyController(self.window).studyMode < 3) {
                 return {
-                    image: 'reresearch.png',
+                    image: 'searchineudic.png',
                     object: self,
-                    selector: "toggleReResearch:",
-                    checked: self.reResearchIsOn
+                    selector: "toggleSearchInEudic:",
+                    checked: self.searchInEudicIsOn
                 };
             }
             return null;
@@ -63,27 +63,27 @@ JSB.newAddon = function(mainPath) {
             if(!Application.sharedInstance().checkNotifySenderInWindow(sender,self.window)) {
                 return; // Don't process message from other window
             }
-            if(!self.reResearchIsOn) {
+            if(!self.searchInEudicIsOn) {
                 return;
             }
             var text = sender.userInfo.documentController.selectionText;
-            if(text && text.length) {
+            if(text && text.length && text.split(" ").length - 1 < 3) {
                 let url = generateUrl(text);
                 openUrlWithExternalBrowser(url);
             }
         },
         // Add-On Switch
-        toggleReResearch: function(sender) {
+        toggleSearchInEudic: function(sender) {
             var lan = NSLocale.preferredLanguages().length ? NSLocale.preferredLanguages()[0].substring(0, 2) : 'en';
-            let tips = lan === 'zh' ? 'ReResearch插件已关闭' : 'ReResearch is off';
-            if(self.reResearchIsOn) {
-                self.reResearchIsOn = false;
+            let tips = lan === 'zh' ? 'SearchInEudic插件已关闭' : 'SearchInEudic is off';
+            if(self.searchInEudicIsOn) {
+                self.searchInEudicIsOn = false;
             } else {
-                self.reResearchIsOn = true;
-                tips = lan === 'zh' ? 'ReResearch插件已开启，所选文字将被外部浏览器处理' : 'ReResearch is on. Process selected Text in the external Browser';
+                self.searchInEudicIsOn = true;
+                tips = lan === 'zh' ? 'SearchInEudic插件已开启，所选文字将被外部浏览器处理' : 'SearchInEudic is on. Process selected Text in the external Browser';
             }
             Application.sharedInstance().showHUD(tips, self.window, 2);
-            NSUserDefaults.standardUserDefaults().setObjectForKey(self.reResearchIsOn, 'marginnote_reresearch');
+            NSUserDefaults.standardUserDefaults().setObjectForKey(self.searchInEudicIsOn, 'marginnote_searchineudic');
             Application.sharedInstance().studyController(self.window).refreshAddonCommands();
         },
     }, {
