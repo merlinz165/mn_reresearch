@@ -80,7 +80,7 @@ JSB.newAddon = function(mainPath) {
                 self.searchInEudicIsOn = false;
             } else {
                 self.searchInEudicIsOn = true;
-                tips = lan === 'zh' ? 'SearchInEudic插件已开启，所选文字将被外部浏览器处理' : 'SearchInEudic is on. Process selected Text in the external Browser';
+                tips = lan === 'zh' ? 'SearchInEudic插件已开启，将自动打开欧路词典并查询选中单词' : 'SearchInEudic is on, selected words will be searched in Eudic';
             }
             Application.sharedInstance().showHUD(tips, self.window, 2);
             NSUserDefaults.standardUserDefaults().setObjectForKey(self.searchInEudicIsOn, 'marginnote_searchineudic');
