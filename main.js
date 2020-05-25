@@ -17,6 +17,20 @@ JSB.newAddon = function(mainPath) {
         let encodedUrl = encodeURI(url);
         UIApplication.sharedApplication().openURL(NSURL.URLWithString(encodedUrl));
     }
+
+    function filterText(text) {
+        var cnPattern = /^\p{Unified_Ideograph}{0,4}$/u;
+        var enPattern = /^[A-Za-z\s]+$/;
+        // 英文 最多三个单词
+        if (enPattern.test(text) && text.split(/\s+/).length < 4) {
+            return true;
+        } else if (cnPattern.test(text)) {
+            // 中文 最长四个字
+            // 不含空格
+            return true;
+        }
+        return false;
+    }
     //MARK - Addon Class definition
     var newAddonClass= JSB.defineClass('SearchInEudicAddon : JSExtension', {
         //Mark: - Instance Method Definitions
@@ -67,9 +81,12 @@ JSB.newAddon = function(mainPath) {
                 return;
             }
             var text = sender.userInfo.documentController.selectionText;
-            if(text && text.length && text.split(" ").length - 1 < 3) {
-                let url = generateUrl(text);
-                openUrlWithExternalBrowser(url);
+            if(text && text.length) {
+                text = text.replace(/^\s\s*/, '').replace(/\s\s*$/, ''); //去除首尾空格
+                if(filterText(text)) {
+                    let url = generateUrl(text);
+                    openUrlWithExternalBrowser(url);
+                }
             }
         },
         // Add-On Switch
