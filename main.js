@@ -48,11 +48,15 @@ JSB.newAddon = function(mainPath) {
         },
         //MARK: MN behaviors
         notebookWillOpen: function(notebookid) {
+            // Select text in Document
             NSNotificationCenter.defaultCenter().addObserverSelectorName(self, 'onPopupMenuOnSelection:', 'PopupMenuOnSelection');
+            // Clicking note
+            NSNotificationCenter.defaultCenter().addObserverSelectorName(self, 'onPopupMenuOnNote:', 'PopupMenuOnNote');
             self.searchInEudicIsOn = NSUserDefaults.standardUserDefaults().objectForKey('marginnote_searchineudic');
         },
         notebookWillClose: function(notebookid) {
             NSNotificationCenter.defaultCenter().removeObserverName(self,'PopupMenuOnSelection');
+            NSNotificationCenter.defaultCenter().removeObserverName(self, 'PopupMenuOnNote');
         },
         documentDidOpen: function(docmd5) {
         },
@@ -74,7 +78,7 @@ JSB.newAddon = function(mainPath) {
 
         // Select text and open the external Browser to process the selected Text
         onPopupMenuOnSelection: function(sender) {
-            if(!Application.sharedInstance().checkNotifySenderInWindow(sender,self.window)) {
+            if(!Application.sharedInstance().checkNotifySenderInWindow(sender, self.window)) {
                 return; // Don't process message from other window
             }
             if(!self.searchInEudicIsOn) {
@@ -89,6 +93,26 @@ JSB.newAddon = function(mainPath) {
                 }
             }
         },
+
+        // Clicking note and open the external Browser to process the text of the note.
+        onPopupMenuOnNote: function(sender) {
+            if(!Application.sharedInstance().checkNotifySenderInWindow(sender, self.window)) {
+                return; // Don't process message from other window
+            }
+            if(!self.searchInEudicIsOn) {
+                return;
+            }
+            var text = sender.userInfo.note.allNoteText();
+            if(text && text.length) {
+                text = text.replace(/^\s\s*/, '').replace(/\s\s*$/, ''); //去除首尾空格
+                if(filterText(text)) {
+                    let url = generateUrl(text);
+                    openUrlWithExternalBrowser(url);
+                }
+            }
+
+        },
+
         // Add-On Switch
         toggleSearchInEudic: function(sender) {
             var lan = NSLocale.preferredLanguages().length ? NSLocale.preferredLanguages()[0].substring(0, 2) : 'en';
