@@ -1,9 +1,19 @@
 JSB.newAddon = function(mainPath) {
-    // baseUrl can be modified as needed.
+    // The baseUrl can be URL of web sites
     // Google: http://www.google.com/search?q={keyword}
     // Baidu: http://www.baidu.com/s?wd={keyword}
-    // the baseUrl can also be URL Scheme such as eudic://dict/{keyword}
+    // Google Translate: http://translate.google.com/m/translate?sl=auto&tl=en&text={keyword}
+    // Google Scholar: https://scholar.google.com/scholar?q=
+    // Wikipedia: https://en.m.wikipedia.org/wiki/
+    // Quora: https://www.quora.com/search?q=
+    //
+    // the baseUrl can also be URL Scheme of apps:
+    // eudic://dict/{keyword}
     // eudic-de://dict/{keyword}
+    // Plecoapi: plecoapi://x-callback-url/s?q=
+    // DEVONthink: x-devonthink://search?query=
+    //
+
     var baseUrl = "http://www.google.com/search?q=";
     //MARK: - Customized functions
     // URL generation
